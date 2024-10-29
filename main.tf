@@ -144,4 +144,5 @@ module "http-target" {
   prefix             = local.deployment_id
   boundary_resources = module.boundary-resources.resources
   infra_aws          = module.boundary-cluster.infra_aws
+  owner              = var.owner
 }

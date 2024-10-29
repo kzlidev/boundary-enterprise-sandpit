@@ -41,7 +41,7 @@ resource "boundary_target" "http_user" {
   description              = "HTTP host access for user"
   scope_id                 = var.boundary_resources.project_id
   session_connection_limit = -1
-  default_port             = 3389
+  default_port             = 80
   ingress_worker_filter    = "\"ingress\" in \"/tags/type\""
   egress_worker_filter     = "\"egress\" in \"/tags/type\""
   host_source_ids = [
