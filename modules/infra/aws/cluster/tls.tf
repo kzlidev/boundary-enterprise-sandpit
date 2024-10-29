@@ -16,12 +16,12 @@ resource "tls_self_signed_cert" "ca_cert" {
     country             = "SG"
     province            = "Singapore"
     locality            = "Singapore"
-    common_name         = "Demo Root CA"
-    organization        = "Demo Organization"
-    organizational_unit = "Demo Organization Root Certification Authority"
+    common_name         = "Demo Boundary Root CA"
+    organization        = "Demo Boundary Organization"
+    organizational_unit = "Demo Boundary Organization Root Certification Authority"
   }
 
-  validity_period_hours = 43800 //  1825 days or 5 years
+  validity_period_hours = 4380 // half a year
 
   allowed_uses = [
     "digital_signature",
@@ -50,13 +50,13 @@ resource "tls_cert_request" "controller_csr" {
 
   private_key_pem = tls_private_key.controller_private_key.private_key_pem
 
-  dns_names = ["boundary.demo.com", "localhost", "127.0.0.1"]
+  dns_names = [var.route53_boundary_hosted_zone_name]
 
   subject {
     country             = "SG"
     province            = "Singapore"
     locality            = "Singapore"
-    common_name         = "boundary.demo.com"
+    common_name         = var.route53_hosted_zone
     organization        = "Demo Organization"
     organizational_unit = "Development"
   }
@@ -71,7 +71,7 @@ resource "tls_locally_signed_cert" "controller_signed_cert" {
   // CA certificate
   ca_cert_pem = tls_self_signed_cert.ca_cert.cert_pem
 
-  validity_period_hours = 43800
+  validity_period_hours = 4380
 
   allowed_uses = [
     "digital_signature",

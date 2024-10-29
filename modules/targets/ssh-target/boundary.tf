@@ -112,7 +112,6 @@ resource "boundary_storage_bucket" "aws" {
     "secret_access_key" = aws_iam_access_key.boundary.secret
   }) */
   secrets_json = jsonencode({})
-
-
+  
   worker_filter = "\"egress\" in \"/tags/type\""
 }

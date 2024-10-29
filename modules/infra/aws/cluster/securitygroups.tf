@@ -98,6 +98,13 @@ module "controller_sg" {
       description = "boundary-controller cluster port used by worker to connect within VPC network"
       cidr_blocks = module.vpc.vpc_cidr_block
     },
+    {
+      from_port   = 22
+      to_port     = 22
+      protocol    = "tcp"
+      description = "SSH port from Instance Connect"
+      cidr_blocks = "3.0.5.32/29"
+    },
   ]
 
   egress_rules       = ["all-all"]

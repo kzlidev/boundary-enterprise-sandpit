@@ -19,11 +19,11 @@ locals {
     }
   }
 }
+
 resource "boundary_scope" "global" {
   global_scope = true
   scope_id     = "global"
 }
-
 
 resource "boundary_scope" "org" {
   for_each    = local.scopes

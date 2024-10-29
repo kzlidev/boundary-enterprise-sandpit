@@ -106,7 +106,7 @@ resource "aws_instance" "controller" {
   }
 
   provisioner "file" {
-    source      = "${path.root}/files/boundary/license.hclic"
+    source      = "${path.root}/../boundary.hclic"
     destination = "/tmp/license.hclic"
   }
 

@@ -32,7 +32,6 @@ variable "aws_private_subnets_eks" {
   default     = ["10.200.30.0/24", "10.200.31.0/24", "10.200.32.0/24"]
 }
 
-
 variable "aws_public_subnets" {
   description = "AWS public subnets"
   type        = list(any)
@@ -60,34 +59,34 @@ variable "controller_count" {
 
 
 variable "auth0_domain" {
-  type = string
+  type    = string
   default = ""
 }
 
 variable "auth0_client_id" {
-  type = string
+  type    = string
   default = ""
 }
 
 variable "auth0_client_secret" {
-  type = string
+  type    = string
   default = ""
 }
 
 variable "okta_api_token" {
-  type = string
+  type    = string
   default = ""
 }
 variable "okta_base_url" {
-  type = string
+  type    = string
   default = ""
 }
 variable "okta_domain" {
-  type = string
+  type    = string
   default = ""
 }
 variable "okta_org_name" {
-  type = string
+  type    = string
   default = ""
 }
 
@@ -116,17 +115,17 @@ variable "boundary_admin_password" {
 }
 
 variable "az_ad_tenant_id" {
-  type = string
+  type    = string
   default = ""
 }
 
 variable "az_ad_client_id" {
-  type = string
+  type    = string
   default = ""
 }
 
 variable "az_ad_client_secret" {
-  type = string
+  type    = string
   default = ""
 }
 
@@ -142,6 +141,11 @@ variable "boundary_version" {
   type = string
 }
 
+variable "route53_hosted_zone" {}
+
+variable "route53_boundary_hosted_zone_name" {
+
+}
 /* 
 variable "rdp_username" {
   type = string

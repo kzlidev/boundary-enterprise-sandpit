@@ -2,7 +2,7 @@
 TFDIR=$(pwd)
 
 if [ $# -eq 0 ]; then
-    echo -e Usage: \"deploy.sh \<ssh\> \<db\> \<win\>\" to deploy selected targets
+    echo -e Usage: \"deploy.sh \<http\> \<ssh\> \<db\> \<win\>\" to deploy selected targets
     echo -e Usage: \"deploy.sh all\" to deploy all targets
     exit 1
 else
@@ -38,8 +38,6 @@ echo -e "\n\n\n----Creating IDP Resources----\n\n\n"
 terraform apply -target module.idp-auth0 -auto-approve
 sleep 10
 
-
-
 echo -e "\n\n\n----Starting Vault Session----\n\n\n"
 while [ $(lsof -i -P -n | grep LISTEN | grep -i 8200 | wc -l) -eq 0 ]
 do
@@ -67,11 +65,12 @@ do
         terraform apply -target module.db-target -auto-approve
     fi
     if [[ $target = "win" || $target = "all" ]]; then
-        echo -e "\n\n\n----Creating Database Target----\n\n\n"
-        terraform apply -target module.db-target -auto-approve
-
         echo -e "\n\n\n----Creating Windows RDP Target----\n\n\n"
         terraform apply -target module.rdp-target -auto-approve
+    fi
+    if [[ $target = "http" || $target = "all" ]]; then
+        echo -e "\n\n\n----Creating HTTP Target----\n\n\n"
+        terraform apply -target module.http-target -auto-approve
     fi
 done
 

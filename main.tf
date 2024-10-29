@@ -12,16 +12,18 @@ resource "random_string" "suffix" {
 }
 
 module "boundary-cluster" {
-  source                 = "./modules/infra/aws/cluster"
-  deployment_id          = local.deployment_id
-  owner                  = var.owner
-  vpc_cidr               = var.aws_vpc_cidr
-  public_subnets         = var.aws_public_subnets
-  private_subnets        = var.aws_private_subnets
-  instance_type          = var.aws_instance_type
-  controller_count       = var.controller_count
-  controller_db_username = var.controller_db_username
-  controller_db_password = var.controller_db_password
+  source                            = "./modules/infra/aws/cluster"
+  deployment_id                     = local.deployment_id
+  owner                             = var.owner
+  vpc_cidr                          = var.aws_vpc_cidr
+  public_subnets                    = var.aws_public_subnets
+  private_subnets                   = var.aws_private_subnets
+  instance_type                     = var.aws_instance_type
+  controller_count                  = var.controller_count
+  controller_db_username            = var.controller_db_username
+  controller_db_password            = var.controller_db_password
+  route53_boundary_hosted_zone_name = var.route53_boundary_hosted_zone_name
+  route53_hosted_zone               = var.route53_hosted_zone
 }
 
 
@@ -134,4 +136,12 @@ module "k8s-target" {
   vault_credstore_id = module.vault-credstore.vault_credstore_id
   ingress_worker_ip  = module.boundary-workers.ingress_worker_private_ip
   egress_worker_ip   = module.boundary-workers.egress_worker_ip
+}
+
+
+module "http-target" {
+  source             = "./modules/targets/http-target"
+  prefix             = local.deployment_id
+  boundary_resources = module.boundary-resources.resources
+  infra_aws          = module.boundary-cluster.infra_aws
 }

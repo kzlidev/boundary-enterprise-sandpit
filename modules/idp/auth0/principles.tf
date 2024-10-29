@@ -14,7 +14,6 @@ resource "boundary_managed_group" "db_analyst" {
   /* filter         = var.idp_type == "auth0" || var.idp_type == "okta" ? "\"analyst\" in \"/userinfo/org-roles\"" : "\"${var.az_ad_group_analyst_id}\" in \"/token/groups\"" */
 }
 
-
 resource "boundary_role" "default_org" {
   for_each        = var.boundary_resources.scopes
   name            = "default_org_${each.key}"

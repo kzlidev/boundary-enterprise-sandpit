@@ -35,3 +35,10 @@ variable "controller_count" {
   type = number
 }
 
+variable "route53_boundary_hosted_zone_name" {
+  type = string
+}
+
+variable "route53_hosted_zone" {
+  type = string
+}
