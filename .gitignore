@@ -19,3 +19,4 @@ tcpdump*
 *.DS_Store
 *.tmp
 .envrc
+tmp/*
