@@ -2,7 +2,7 @@
 TFDIR=$(pwd)
 
 if [ $# -eq 0 ]; then
-    echo -e Usage: \"deploy.sh \<k8s\> \<http\> \<ssh\> \<db\> \<win\>\" to deploy selected targets
+    echo -e Usage: \"deploy.sh \<k8s\> \<https\> \<ssh\> \<db\> \<win\>\" to deploy selected targets
     echo -e Usage: \"deploy.sh all\" to deploy all targets
     exit 1
 else
@@ -15,6 +15,11 @@ if [ ! -f "$TFDIR/generated/ssh_key" ]
 then 
     $TFDIR/scripts/setup.sh $TFDIR
 fi
+
+echo -e "\n\n\n----Generating TLS certificates----\n\n\n"
+
+terraform apply -target module.tls -auto-approve
+sleep 15
 
 echo -e "\n\n\n----Creating Boundary Cluster----\n\n\n"
 
@@ -69,9 +74,9 @@ do
         echo -e "\n\n\n----Creating Windows RDP Target----\n\n\n"
         terraform apply -target module.rdp-target -auto-approve
     fi
-    if [[ $target = "http" || $target = "all" ]]; then
-        echo -e "\n\n\n----Creating HTTP Target----\n\n\n"
-        terraform apply -target module.http-target -auto-approve
+    if [[ $target = "https" || $target = "all" ]]; then
+        echo -e "\n\n\n----Creating HTTPS Target----\n\n\n"
+        terraform apply -target module.https-target -auto-approve
     fi
 done
 

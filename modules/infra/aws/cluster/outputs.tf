@@ -41,5 +41,6 @@ output "infra_aws" {
     boundary_cluster_url             = aws_route53_record.boundary_record.fqdn
     worker_instance_profile          = aws_iam_instance_profile.worker_instance_profile.name
     session_storage_role_arn         = aws_iam_role.session_storage_role.arn
+    ssh_private_key                  = tls_private_key.ssh.private_key_pem
   }
 }

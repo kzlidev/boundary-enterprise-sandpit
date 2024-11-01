@@ -1,48 +1,11 @@
-resource "tls_private_key" "ca_private_key" {
-  algorithm = "RSA"
-}
-
-resource "local_file" "ca_private_key" {
-  content  = tls_private_key.ca_private_key.private_key_pem
-  filename = "${path.module}/tmp/ca.key"
-}
-
-resource "tls_self_signed_cert" "ca_cert" {
-  private_key_pem = tls_private_key.ca_private_key.private_key_pem
-
-  is_ca_certificate = true
-
-  subject {
-    country             = "SG"
-    province            = "Singapore"
-    locality            = "Singapore"
-    common_name         = "Demo Boundary Root CA"
-    organization        = "Demo Boundary Organization"
-    organizational_unit = "Demo Boundary Organization Root Certification Authority"
-  }
-
-  validity_period_hours = 4380 // half a year
-
-  allowed_uses = [
-    "digital_signature",
-    "cert_signing",
-    "crl_signing",
-  ]
-}
-
-resource "local_file" "ca_cert" {
-  content  = tls_self_signed_cert.ca_cert.cert_pem
-  filename = "${path.module}/tmp/ca.cert"
-}
-
-# Create private key for controller certificate 
+# Create private key for controller certificate
 resource "tls_private_key" "controller_private_key" {
   algorithm = "RSA"
 }
 
 resource "local_file" "controller_private_key" {
   content  = tls_private_key.controller_private_key.private_key_pem
-  filename = "${path.module}/tmp/controller_private_key.key"
+  filename = "${path.root}/tmp/tls/controller_private_key.key"
 }
 
 # Create CSR for for controller certificate 
@@ -56,7 +19,7 @@ resource "tls_cert_request" "controller_csr" {
     country             = "SG"
     province            = "Singapore"
     locality            = "Singapore"
-    common_name         = var.route53_hosted_zone
+    common_name         = var.route53_boundary_hosted_zone_name
     organization        = "Demo Organization"
     organizational_unit = "Development"
   }
@@ -83,5 +46,5 @@ resource "tls_locally_signed_cert" "controller_signed_cert" {
 
 resource "local_file" "controller_cert" {
   content  = tls_locally_signed_cert.controller_signed_cert.cert_pem
-  filename = "${path.module}/tmp/controller.cert"
+  filename = "${path.root}/tmp/tls/controller.cert"
 }

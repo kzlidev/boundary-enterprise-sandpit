@@ -33,9 +33,9 @@ resource "local_file" "private_rsa_key" {
 
 data "aws_ami" "an_image" {
   most_recent = true
-  owners      = ["self"]
+  owners = ["self"]
   filter {
-    name   = "name"
+    name = "name"
     values = ["${var.owner}-boundary-enterprise*"]
   }
 }
@@ -56,11 +56,11 @@ resource "random_id" "bsr_kms" {
 }
 
 resource "aws_instance" "controller" {
-  count           = var.controller_count
-  ami             = data.aws_ami.an_image.id
-  instance_type   = var.instance_type
-  key_name        = aws_key_pair.this.key_name
-  subnet_id       = element(module.vpc.private_subnets, count.index % length(module.vpc.private_subnets))
+  count         = var.controller_count
+  ami           = data.aws_ami.an_image.id
+  instance_type = var.instance_type
+  key_name      = aws_key_pair.this.key_name
+  subnet_id = element(module.vpc.private_subnets, count.index % length(module.vpc.private_subnets))
   security_groups = [module.controller_sg.security_group_id]
 
   lifecycle {
@@ -73,7 +73,7 @@ resource "aws_instance" "controller" {
   }
 
   provisioner "file" {
-    content     = filebase64("${path.root}/files/boundary/install.sh")
+    content = filebase64("${path.root}/files/boundary/install.sh")
     destination = "/tmp/install_base64.sh"
   }
 
@@ -111,13 +111,13 @@ resource "aws_instance" "controller" {
   }
 
   provisioner "file" {
-    content     = tls_locally_signed_cert.controller_signed_cert.cert_pem
+    content     = var.controller_cert
     destination = "/tmp/boundary-cert.pem"
   }
 
 
   provisioner "file" {
-    content     = tls_private_key.controller_private_key.private_key_pem
+    content     = var.controller_private_key
     destination = "/tmp/boundary-key.pem"
   }
 

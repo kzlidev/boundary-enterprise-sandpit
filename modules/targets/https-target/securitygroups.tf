@@ -1,8 +1,8 @@
-module "private-http-inbound" {
+module "private-https-inbound" {
   source = "terraform-aws-modules/security-group/aws"
 
   name        = "${var.prefix}-private-http"
-  description = "Allow HTTP private inbound"
+  description = "Allow HTTP/S private inbound"
   vpc_id      = var.infra_aws.vpc_id
 
   ingress_with_source_security_group_id = [

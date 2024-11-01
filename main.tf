@@ -11,6 +11,13 @@ resource "random_string" "suffix" {
   special = false
 }
 
+module "tls" {
+  source = "./modules/tls"
+
+  route53_boundary_hosted_zone_name  = var.route53_boundary_hosted_zone_name
+  route53_hashicats_hosted_zone_name = var.route53_hashicats_hosted_zone_name
+}
+
 module "boundary-cluster" {
   source                            = "./modules/infra/aws/cluster"
   deployment_id                     = local.deployment_id
@@ -24,6 +31,9 @@ module "boundary-cluster" {
   controller_db_password            = var.controller_db_password
   route53_boundary_hosted_zone_name = var.route53_boundary_hosted_zone_name
   route53_hosted_zone               = var.route53_hosted_zone
+  controller_cert                   = module.tls.boundary_controller_cert
+  controller_private_key            = module.tls.boundary_controller_private_key
+  ca_cert                           = module.tls.ca_cert
 }
 
 
@@ -138,11 +148,14 @@ module "k8s-target" {
   egress_worker_ip   = module.boundary-workers.egress_worker_ip
 }
 
-
-module "http-target" {
-  source             = "./modules/targets/http-target"
-  prefix             = local.deployment_id
-  boundary_resources = module.boundary-resources.resources
-  infra_aws          = module.boundary-cluster.infra_aws
-  owner              = var.owner
+module "https-target" {
+  source                = "modules/targets/https-target"
+  prefix                = local.deployment_id
+  boundary_resources    = module.boundary-resources.resources
+  infra_aws             = module.boundary-cluster.infra_aws
+  owner                 = var.owner
+  bastion_public_ip     = module.boundary-cluster.infra_aws.bastion_ip
+  hashicats_cert        = module.tls.hashicats_https_cert
+  hashicats_private_key = module.tls.hashicats_https_private_key
+  ssh_private_key       = module.boundary-cluster.infra_aws.ssh_private_key
 }

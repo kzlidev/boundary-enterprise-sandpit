@@ -1,7 +1,7 @@
 resource "aws_acm_certificate" "cert" {
-  private_key       = tls_private_key.controller_private_key.private_key_pem
-  certificate_body  = tls_locally_signed_cert.controller_signed_cert.cert_pem
-  certificate_chain = tls_self_signed_cert.ca_cert.cert_pem
+  private_key       = var.controller_private_key
+  certificate_body  = var.controller_cert
+  certificate_chain = var.ca_cert
 }
 
 resource "aws_lb" "controller_lb" {
@@ -10,7 +10,7 @@ resource "aws_lb" "controller_lb" {
   load_balancer_type               = "application"
   enable_cross_zone_load_balancing = false
   subnets                          = module.vpc.public_subnets
-  security_groups                  = [module.web_sg.security_group_id]
+  security_groups = [module.web_sg.security_group_id]
   tags = {
     Name = "controller-lb"
   }
@@ -21,7 +21,7 @@ resource "aws_lb" "controller_internal_lb" {
   internal                         = true
   load_balancer_type               = "network"
   enable_cross_zone_load_balancing = false
-  subnets                          = module.vpc.private_subnets
+  subnets = module.vpc.private_subnets
   /* security_groups                  = [module.web_internal_sg.security_group_id] */
   tags = {
     Name = "controller-internal-lb"

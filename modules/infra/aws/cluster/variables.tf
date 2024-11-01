@@ -12,11 +12,11 @@ variable "vpc_cidr" {
 
 variable "public_subnets" {
   description = "Public subnets"
-  type        = list(any)
+  type = list(any)
 }
 variable "private_subnets" {
   description = "Private subnets"
-  type        = list(any)
+  type = list(any)
 }
 
 variable "instance_type" {
@@ -40,5 +40,17 @@ variable "route53_boundary_hosted_zone_name" {
 }
 
 variable "route53_hosted_zone" {
+  type = string
+}
+
+variable "controller_cert" {
+  type = string
+}
+
+variable "controller_private_key" {
+  type = string
+}
+
+variable "ca_cert" {
   type = string
 }

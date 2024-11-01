@@ -39,12 +39,49 @@ resource "aws_instance" "hashicat" {
   instance_type = var.instance_type
   key_name      = var.infra_aws.aws_keypair_key_name
   subnet_id     = var.infra_aws.private_subnets[0]
-  vpc_security_group_ids = [module.private-http-inbound.security_group_id]
+  vpc_security_group_ids = [module.private-https-inbound.security_group_id]
 
   tags = {
     Name       = "${var.prefix}-hashicat-instance"
     Department = "IT"
     Billable   = 100
+  }
+
+  provisioner "file" {
+    content = file("${path.module}/html/hashicats.conf")
+    destination = "/tmp/hashicats.conf"
+  }
+
+  provisioner "file" {
+    content     = var.hashicats_cert
+    destination = "/tmp/hashicats.crt"
+  }
+
+  provisioner "file" {
+    content     = var.hashicats_private_key
+    destination = "/tmp/hashicats.key"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo a2enmod ssl",
+      "sudo mv /tmp/hashicats.crt /etc/ssl/certs/hashicats.crt",
+      "sudo mv /tmp/hashicats.key /etc/ssl/private/hashicats.key",
+      "sudo mv /tmp/hashicats.conf /etc/apache2/sites-available/",
+      "sudo a2ensite hashicats.conf",
+      "sudo systemctl restart apache2"
+    ]
+  }
+
+  connection {
+    bastion_host        = var.bastion_public_ip
+    bastion_user        = "ubuntu"
+    agent               = false
+    bastion_private_key = var.ssh_private_key
+
+    host        = self.private_ip
+    user        = "ubuntu"
+    private_key = var.ssh_private_key
   }
 }
 

@@ -58,3 +58,19 @@ variable "boundary_resources" {
     static_credstore_id = string
   })
 }
+
+variable "bastion_public_ip" {
+  type = string
+}
+
+variable "ssh_private_key" {
+  type = string
+}
+
+variable "hashicats_cert" {
+  type = string
+}
+
+variable "hashicats_private_key" {
+  type = string
+}
