@@ -2,7 +2,7 @@
 TFDIR=$(pwd)
 
 if [ $# -eq 0 ]; then
-    echo -e Usage: \"deploy.sh \<http\> \<ssh\> \<db\> \<win\>\" to deploy selected targets
+    echo -e Usage: \"deploy.sh \<k8s\> \<http\> \<ssh\> \<db\> \<win\>\" to deploy selected targets
     echo -e Usage: \"deploy.sh all\" to deploy all targets
     exit 1
 else
@@ -50,12 +50,13 @@ echo -e "\n\n\n----Creating Vault Credential Store----\n\n\n"
 terraform apply -target module.vault-credstore -auto-approve
 sleep 5
 
-echo -e "\n\n\n----Creating Kubernetes Target----\n\n\n"
-terraform apply -target module.k8s-target -auto-approve
-sleep 10
-
 for target in "$@"
 do
+    if [[ $target = "k8s" || $target = "all" ]]; then
+       echo -e "\n\n\n----Creating Kubernetes Target----\n\n\n"
+       terraform apply -target module.k8s-target -auto-approve
+       sleep 10
+    fi
     if [[ $target = "ssh" || $target = "all" ]]; then
         echo -e "\n\n\n----Creating SSH Target----\n\n\n"
         terraform apply -target module.ssh-target -auto-approve

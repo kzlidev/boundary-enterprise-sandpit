@@ -47,9 +47,16 @@ resource "boundary_target" "http_user" {
   host_source_ids = [
     boundary_host_set_static.http_servers.id
   ]
-
   # brokered_credential_source_ids = [ boundary_credential_username_password.static_win_creds.id ]
+}
 
+resource "boundary_alias_target" "http_alias_target" {
+  name                      = "http_alias_target"
+  description               = "Alias to target HTTP using host boundary_host_static.bar"
+  scope_id                  = "global"
+  value                     = "example.http.boundary"
+  destination_id            = boundary_target.http_user.id
+  authorize_session_host_id = boundary_host_static.http_servers.id
 }
 
 # resource "boundary_credential_username_password" "static_win_creds" {

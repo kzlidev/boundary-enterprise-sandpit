@@ -18,7 +18,7 @@ resource "local_file" "private_key" {
   filename = "${path.root}/generated/${local.key_name}"
 
   provisioner "local-exec" {
-    command = "chmod 400 ${path.root}/generated/${local.key_name}"
+    command = "chmod 600 ${path.root}/generated/${local.key_name}"
   }
 }
 
@@ -27,7 +27,7 @@ resource "local_file" "private_rsa_key" {
   filename = "${path.root}/generated/${local.rsa_key_name}"
 
   provisioner "local-exec" {
-    command = "chmod 400 ${path.root}/generated/${local.rsa_key_name}"
+    command = "chmod 600 ${path.root}/generated/${local.rsa_key_name}"
   }
 }
 
