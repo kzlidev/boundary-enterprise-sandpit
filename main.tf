@@ -149,7 +149,7 @@ module "k8s-target" {
 }
 
 module "https-target" {
-  source                = "modules/targets/https-target"
+  source                = "./modules/targets/https-target"
   prefix                = local.deployment_id
   boundary_resources    = module.boundary-resources.resources
   infra_aws             = module.boundary-cluster.infra_aws
